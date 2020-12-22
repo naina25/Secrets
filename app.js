@@ -45,6 +45,24 @@ app.post("/register", (req, res) => {
     })
 });
 
+app.post("/login", (req, res) => {
+    User.findOne({email: req.body.username}, (err, foundUser) => {
+        if(err){
+            res.send("User not found");
+        }else{
+            if(foundUser === null || foundUser === ""){
+                res.send("user not found");
+            }else{
+                if(foundUser.password == req.body.password){
+                    res.render("secrets");
+                }else{
+                    res.send("Wrong password!! Try again");
+                }
+            }
+        }
+    })
+})
+
 app.listen(3030, function() {
     console.log("Server started on port 3030");
   });
