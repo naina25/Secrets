@@ -64,6 +64,11 @@ app.get("/secrets", (req, res) => {
   }
 });
 
+app.get("/logout", (req, res) => {
+  req.logOut();
+  res.redirect("/");
+});
+
 app.post("/register", (req, res) => {
   User.register(
     { username: req.body.username },
@@ -81,7 +86,21 @@ app.post("/register", (req, res) => {
   );
 });
 
-app.post("/login", (req, res) => {});
+app.post("/login", (req, res) => {
+  const user = new User({
+    username: req.body.username,
+    password: req.body.password,
+  });
+  req.login(user, (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      passport.authenticate("local")(req, res, () => {
+        res.redirect("/secrets");
+      });
+    }
+  });
+});
 
 app.listen(3030, function () {
   console.log("Server started on port 3030");
